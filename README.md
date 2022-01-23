@@ -41,7 +41,9 @@ Find day by date `findByDate($date)`
 
 Implemented calendars
 ---------------------
-[CZECH] Holidays
+[CZECH]
+- Holidays
+- Name days
 
 
 www.lukashron.cz
