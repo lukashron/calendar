@@ -415,7 +415,7 @@ class Namedays implements CalendarInterface
 
     public function label(): string
     {
-        return 'name';
+        return 'namedays';
     }
 
     public function getFloating(int $year): array
