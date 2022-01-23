@@ -44,6 +44,7 @@ Implemented calendars
 [CZECH]
 - Holidays
 - Name days
+- International days
 
 
 www.lukashron.cz
