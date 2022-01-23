@@ -59,7 +59,7 @@ class Holidays implements CalendarInterface
 
     public function label(): string
     {
-        return 'holidays';
+        return 'czech-holidays';
     }
 
     public function getFloating(int $year): array

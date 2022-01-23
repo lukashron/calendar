@@ -507,7 +507,7 @@ class Internationaldays implements CalendarInterface
 
     public function label(): string
     {
-        return 'internationaldays';
+        return 'czech-internationaldays';
     }
 
     public function getFloating(int $year): array
