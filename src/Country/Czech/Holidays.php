@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace LukasHron\Calendar\Czech;
+namespace LukasHron\Calendar\Country\Czech;
 
 use DateTime;
 use LukasHron\Calendar\CalendarException;

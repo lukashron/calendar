@@ -10,9 +10,10 @@ Example
 -------
 ```php
 $myCalendar = new \LukasHron\Calendar\CalendarManager();
-$myCalendar->addCalendar(
-    new \LukasHron\Calendar\Czech\Holidays()
-);
+
+$myCalendar->addCalendar(new \LukasHron\Calendar\Country\Czech\Holidays());
+$myCalendar->addCalendar(new \LukasHron\Calendar\Country\Czech\Namedays());
+$myCalendar->addCalendar(new \LukasHron\Calendar\Country\Czech\Internationaldays());
 
 dump($myCalendar->getYear());
 dump($myCalendar->getFullCalendar());
