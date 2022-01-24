@@ -13,18 +13,33 @@ declare(strict_types=1);
 namespace LukasHron\Calendar;
 
 use DateTime;
+use Exception;
 
 class CalendarManager
 {
+    /** @var int */
     private int $year;
-    private array $calendarLabels = [];
-    private array $calendar = [];
 
+    /** @var array */
+    private array $calendars = [];
+
+
+    /**
+     * Init calendar year
+     */
     public function __construct()
     {
-        $this->year = (int) date('Y');
+        $this->year = (int)date('Y');
     }
 
+
+    /**
+     * Manual set calendar year.
+     *
+     * @param int $year
+     * @return void
+     * @throws CalendarManagerException
+     */
     public function setYear(int $year): void
     {
         if ($year > 0) {
@@ -34,72 +49,161 @@ class CalendarManager
         }
     }
 
+
+    /**
+     * Get calendar year.
+     *
+     * @return int
+     */
     public function getYear(): int
     {
         return $this->year;
     }
 
-    public function addEvent(int $month, int $day, string $label, $event): void
+
+    /**
+     * Add an existing calendar.
+     *
+     * @param CalendarInterface $calendar
+     * @return void
+     * @throws CalendarException
+     */
+    public function addCalendar(CalendarInterface $calendar): void
     {
-        if (! isset($this->calendar[$month][$day][$label])) {
-            $this->calendar[$month][$day] = [$label => $event];
-        } else {
-            if (is_array($this->calendar[$month][$day][$label])) {
-                if (is_array($event)) {
-                    $this->calendar[$month][$day][$label] = array_merge($this->calendar[$month][$day][$label], $event);
-                } else {
-                    $this->calendar[$month][$day][$label][] = $event;
-                }
-            } else {
-                if (is_array($event)) {
-                    $event[] = $this->calendar[$month][$day][$label];
-                    $this->calendar[$month][$day][$label] = $event;
-                } else {
-                    $this->calendar[$month][$day][$label] = [$this->calendar[$month][$day][$label], $event];
-                }
-            }
+        if (isset($this->calendars[$calendar->label()])) {
+            throw new CalendarException(
+                sprintf('Calendar "%s" already exists.', $calendar->label())
+            );
         }
 
-        if (! isset($this->calendarLabels[$label])) {
-            $this->calendarLabels[$label] = 0;
-        } else {
-            $this->calendarLabels[$label]++;
-        }
+        $this->calendars[$calendar->label()] = $calendar;
     }
 
-    public function addEventsFromArray(string $label, array $eventsArray): void
-    {
-        foreach ($eventsArray as $numberMonth => $month) {
-            foreach ($month as $numberDay => $dayEvent) {
-                $this->addEvent($numberMonth, $numberDay, $label, $dayEvent);
-            }
-        }
-    }
 
-    public function addCalendar(CalendarInterface $events): void
-    {
-        $this->addEventsFromArray($events->label(), $events->getFixed());
-        $this->addEventsFromArray($events->label(), $events->getFloating($this->year));
-    }
-
+    /**
+     * Get all register calendar labels.
+     *
+     * @return array
+     */
     public function getLabels(): array
     {
-        return $this->calendarLabels;
+        return array_keys($this->calendars);
     }
 
+
+    /**
+     * @throws CalendarException
+     */
+    private function calendarMergeEvents(int $month, int $day, string $label, array $events, array $calendar): array
+    {
+        // Create day
+        if (!isset($calendar[$month][$day][$label])) {
+            $calendar[$month][$day][$label] = $events;
+
+        } elseif (is_array($calendar[$month][$day][$label])) {
+            $calendar[$month][$day][$label] = array_merge($calendar[$month][$day][$label], $events);
+
+        } else {
+            throw new CalendarException('Unsupported calendar event type');
+        }
+
+        return $calendar;
+    }
+
+
+    /**
+     * @throws CalendarException
+     */
+    private function calendarEventsWalker(string $label, array $calendar, array $composition): array
+    {
+        // List of months
+        foreach ($calendar as $monthNumber => $month) {
+
+            // List of days
+            foreach ($month as $dayNumber => $events) {
+                $composition = $this->calendarMergeEvents($monthNumber, $dayNumber, $label, $events, $composition);
+            }
+        }
+
+        return $composition;
+    }
+
+
+    /**
+     * Returns a completely compiled calendar.
+     *
+     * @return array
+     * @throws CalendarException
+     */
     public function getFullCalendar(): array
     {
-        return $this->calendar;
-    }
+        $composition = [];
 
-    public function findByMonthAndDayNumber(int $month, int $day)
-    {
-        if (isset($this->calendar[$month][$day])) {
-            return $this->calendar[$month][$day];
+        /** @var CalendarInterface $calendar */
+        foreach ($this->calendars as $calendar) {
+
+            $composition = $this->calendarEventsWalker(
+                $calendar->label(),
+                $calendar->getFixed(),
+                $composition
+            );
+
+            $composition = $this->calendarEventsWalker(
+                $calendar->label(),
+                $calendar->getFloating($this->year),
+                $composition
+            );
+
         }
-        return null;
+
+        ksort($composition);
+
+        return $composition;
     }
 
+
+    /**
+     * @throws CalendarException
+     */
+    public function findByMonthAndDayNumber(int $month, int $day): array
+    {
+        $composition = [];
+
+        /** @var CalendarInterface $calendar */
+        foreach ($this->calendars as $calendar) {
+
+            if (isset($calendar->getFixed()[$month][$day])) {
+                $composition = $this->calendarMergeEvents(
+                    $month,
+                    $day,
+                    $calendar->label(),
+                    $calendar->getFixed()[$month][$day],
+                    $composition
+                );
+            }
+
+            if ($calendar->getFloating($this->year)[$month][$day]) {
+                $composition = $this->calendarMergeEvents(
+                    $month,
+                    $day,
+                    $calendar->label(),
+                    $calendar->getFloating($this->year)[$month][$day],
+                    $composition
+                );
+            }
+
+        }
+
+        return $composition;
+    }
+
+
+    /**
+     * @param $date
+     * @return array|false
+     * @throws CalendarManagerException
+     * @throws Exception
+     */
     public function findByDate($date)
     {
         if (is_string($date)) {
