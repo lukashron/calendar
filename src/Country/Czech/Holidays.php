@@ -29,8 +29,8 @@ class Holidays implements CalendarInterface
     private const FIXED_HOLIDAYS = [
         1 => [
             1 => [
-                ['Nový rok'],
-                ['Den obnovy samostatného českého státu']
+                'Nový rok',
+                'Den obnovy samostatného českého státu'
             ]
         ],
         5 => [
