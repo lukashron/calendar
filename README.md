@@ -16,6 +16,7 @@ $myCalendar->addCalendar(new \LukasHron\Calendar\Country\Czech\Namedays());
 $myCalendar->addCalendar(new \LukasHron\Calendar\Country\Czech\Internationaldays());
 
 dump($myCalendar->getYear());
+dump($myCalendar->getLabels());
 dump($myCalendar->getFullCalendar());
 dump($myCalendar->findByDate('1.1.2022'));
 ```
@@ -26,11 +27,7 @@ Setting calendar year `setYear(int $year): void`
 
 Get calendar year `getYear(): int`
 
-Add custom event to calendar `addEvent(int $month, int $day, string $label, $event): void`
-
-Add custom events to calendar from array `addEventsFromArray(string $label, array $eventsArray): void`
-
-Add calendar - instance of CalendarInterface `addCalendar(CalendarInterface $events): void`
+Add calendar - instance of CalendarInterface `addCalendar(CalendarInterface $calendar): void`
 
 Get full calendar array `getFullCalendar(): array`
 
