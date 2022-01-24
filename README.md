@@ -1,5 +1,7 @@
 # PHP extend for Czech calendar.
 
+![alt text](https://github.com/lukashron/calendar/blob/master/screenshot.png?raw=true)
+
 Installation
 ------------
 ```
