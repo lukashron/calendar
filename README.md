@@ -35,7 +35,9 @@ Get full calendar array `getFullCalendar(): array`
 
 Get all labels in calendar `getLabels(): array`
 
-Find day by month and day number `findByMonthAndDayNumber(int $month, int $day)`
+Find by number month and day `findByMonthAndDayNumber(int $month, int $day)`
+
+Find by number month and day, return simple array `findByMonthAndDayNumberSimpleArray(int $month, int $day): array`
 
 Find day by date `findByDate($date)`
 

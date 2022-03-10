@@ -202,6 +202,19 @@ class CalendarManager
 
 
     /**
+     * @param int $month
+     * @param int $day
+     * @return array
+     * @throws CalendarException
+     */
+    public function findByMonthAndDayNumberSimpleArray(int $month, int $day): array
+    {
+        $calendarDay = $this->findByMonthAndDayNumber($month, $day);
+        return $calendarDay[$month][$day] ?? [];
+    }
+
+
+    /**
      * @param $date
      * @return array|false
      * @throws CalendarManagerException
