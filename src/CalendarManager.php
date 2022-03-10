@@ -92,6 +92,12 @@ class CalendarManager
 
 
     /**
+     * @param int $month
+     * @param int $day
+     * @param string $label
+     * @param array $events
+     * @param array $calendar
+     * @return array
      * @throws CalendarException
      */
     private function calendarMergeEvents(int $month, int $day, string $label, array $events, array $calendar): array
@@ -112,6 +118,10 @@ class CalendarManager
 
 
     /**
+     * @param string $label
+     * @param array $calendar
+     * @param array $composition
+     * @return array
      * @throws CalendarException
      */
     private function calendarEventsWalker(string $label, array $calendar, array $composition): array
