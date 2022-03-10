@@ -182,7 +182,7 @@ class CalendarManager
                 );
             }
 
-            if ($calendar->getFloating($this->year)[$month][$day]) {
+            if (isset($calendar->getFloating($this->year)[$month][$day])) {
                 $composition = $this->calendarMergeEvents(
                     $month,
                     $day,
