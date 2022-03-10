@@ -163,6 +163,9 @@ class CalendarManager
 
 
     /**
+     * @param int $month
+     * @param int $day
+     * @return array
      * @throws CalendarException
      */
     public function findByMonthAndDayNumber(int $month, int $day): array
