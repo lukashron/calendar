@@ -39,6 +39,8 @@ Find by number month and day `findByMonthAndDayNumber(int $month, int $day)`
 
 Find by number month and day, return simple array `findByMonthAndDayNumberSimpleArray(int $month, int $day): array`
 
+Get rand event `findRandomEvent(?string $calendarLabel = null)`
+
 Find day by date `findByDate($date)`
 
 Implemented calendars

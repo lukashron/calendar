@@ -248,4 +248,39 @@ class CalendarManager
             (int) $date->format('d')
         );
     }
+
+
+    /**
+     * @param string|null $calendarLabel
+     * @return mixed
+     * @throws CalendarException
+     */
+    public function findRandomEvent(?string $calendarLabel = null)
+    {
+        $calendar = $this->getFullCalendar();
+
+        $month = array_rand($calendar, 1);
+        $day = array_rand($calendar[$month], 1);
+
+        /**
+         * Only from the selected calendar in "$calendarLabel" param
+         */
+        if ($calendarLabel) {
+            if (isset($this->calendars[$calendarLabel])) {
+
+                $event = array_rand($calendar[$month][$day][$calendarLabel], 1);
+                return $calendar[$month][$day][$calendarLabel][$event];
+
+            } else {
+                throw new CalendarException(
+                    sprintf('Calendar "%s" not exists!', $calendarLabel)
+                );
+            }
+        }
+
+        $calendarRealLabel = array_rand($calendar[$month][$day], 1);
+        $event = array_rand($calendar[$month][$day][$calendarRealLabel], 1);
+
+        return $calendar[$month][$day][$calendarRealLabel][$event];
+    }
 }
